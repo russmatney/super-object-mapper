@@ -6,6 +6,10 @@ describe('Super Object Mapper', function() {
     expect(SuperOM).to.exist();
   });
 
+  beforeEach(function() {
+    SuperOM._mappers = {};
+  });
+
   describe('maps a defined object to a specified map', function() {
 
     var superOM = new SuperOM();
@@ -41,7 +45,6 @@ describe('Super Object Mapper', function() {
     it('should not include fields that are not in the mapper', function() {
       expect(mappedObject.secrets).not.to.exist();
     });
-
   });
 
   describe('caches mappers globally', function() {
@@ -60,39 +63,48 @@ describe('Super Object Mapper', function() {
       }
     };
 
-    superOM1.addMapper(userMapper, "users");
-    superOM2.addMapper(locationMapper, "locations");
-
     it('should share mappers between implementations', function(){
+      superOM1.addMapper(userMapper, "users");
+      superOM2.addMapper(locationMapper, "locations");
+
       expect(SuperOM._mappers.locations).to.exist();
       expect(SuperOM._mappers.users).to.exist();
     });
-
   });
 
   describe('handles missing mappers', function() {
     var superOM = new SuperOM();
-    var object = {
-      "name": "William Franklyn Bowser"
-    };
-    var mapObjectFunc = superOM.mapObject.bind(superOM, "database", "gremlins", object);
-
     it('should throw a missing mapper error', function() {
+      var object = {
+        "name": "William Franklyn Bowser"
+      };
+      var mapObjectFunc = superOM.mapObject.bind(superOM, "database", "gremlins", object);
+
       expect(mapObjectFunc).to.throw(/Mapper not found/);
     });
   });
 
   describe('handles missing maps', function() {
     var superOM = new SuperOM();
-    var mapper = {};
-    superOM.addMapper(mapper, "koopas");
-    var object = {
-      "name": "William Franklyn Bowser"
-    };
-    var mapObjectFunc = superOM.mapObject.bind(superOM, "database", "koopas", object);
-
     it('should throw a missing map error', function() {
+      var mapper = {};
+      superOM.addMapper(mapper, "koopas");
+      var object = {
+        "name": "William Franklyn Bowser"
+      };
+      var mapObjectFunc = superOM.mapObject.bind(superOM, "database", "koopas", object);
+
       expect(mapObjectFunc).to.throw(/Map not found/);
+    });
+  });
+
+  describe('handles null', function() {
+    var superOM = new SuperOM();
+    it('should return null', function() {
+      superOM.addMapper({"domain":{}}, "users");
+      var mappedObject = superOM.mapObject("domain", "users", null);
+
+      expect(mappedObject).to.equal(null);
     });
   });
 
