@@ -17,9 +17,9 @@ describe('Super Object Mapper', function() {
       }
     };
 
-    var collection = 'users';
+    var mapper = 'users';
 
-    superOM.addMapper(userMapper, collection);
+    superOM.addMapper(userMapper, mapper);
 
     var map = 'database';
     var object = {
@@ -27,7 +27,7 @@ describe('Super Object Mapper', function() {
       email: "mario@toadstool.com",
       secrets: "Sleeps with a blanky named Stewart"
     };
-    var mappedObject = superOM.mapObject(map, collection, object);
+    var mappedObject = superOM.mapObject(map, mapper, object);
 
     it('should return a mapped object', function() {
       expect(mappedObject).to.exist();
@@ -70,15 +70,30 @@ describe('Super Object Mapper', function() {
 
   });
 
-  describe('handles missing collections', function() {
+  describe('handles missing mappers', function() {
     var superOM = new SuperOM();
     var object = {
       "name": "William Franklyn Bowser"
     };
     var mapObjectFunc = superOM.mapObject.bind(superOM, "database", "gremlins", object);
 
-    it('should throw a missing collection error', function() {
-      expect(mapObjectFunc).to.throw(/Collection not found/);
+    it('should throw a missing mapper error', function() {
+      expect(mapObjectFunc).to.throw(/Mapper not found/);
     });
   });
+
+  describe('handles missing maps', function() {
+    var superOM = new SuperOM();
+    var mapper = {};
+    superOM.addMapper(mapper, "koopas");
+    var object = {
+      "name": "William Franklyn Bowser"
+    };
+    var mapObjectFunc = superOM.mapObject.bind(superOM, "database", "koopas", object);
+
+    it('should throw a missing map error', function() {
+      expect(mapObjectFunc).to.throw(/Map not found/);
+    });
+  });
+
 });
