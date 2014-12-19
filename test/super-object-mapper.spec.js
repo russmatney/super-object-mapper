@@ -9,6 +9,8 @@ describe('Super Object Mapper', function() {
 
   describe('maps a defined object to a specified map', function() {
 
+    var superOM = new SuperOM();
+
     var userMapper = {
       "database": {
         "name": "name",
@@ -18,7 +20,7 @@ describe('Super Object Mapper', function() {
 
     var collection = 'users';
 
-    SuperOM.addMapper(userMapper, collection);
+    superOM.addMapper(userMapper, collection);
 
     var map = 'database';
     var object = {
@@ -26,7 +28,7 @@ describe('Super Object Mapper', function() {
       email: "mario@toadstool.com",
       secrets: "Sleeps with a blanky named Stewart"
     };
-    var mappedObject = SuperOM.mapObject(map, collection, object);
+    var mappedObject = superOM.mapObject(map, collection, object);
 
     it('should return a mapped object', function() {
       expect(mappedObject).to.exist();
@@ -39,6 +41,32 @@ describe('Super Object Mapper', function() {
 
     it('should not include fields that are not in the mapper', function() {
       expect(mappedObject.secrets).not.to.exist();
+    });
+
+  });
+
+  describe('caches mappers globally', function() {
+    var superOM1 = new SuperOM();
+    var superOM2 = new SuperOM();
+
+    var userMapper = {
+      "database": {
+        "name": "name"
+      }
+    };
+
+    var locationMapper = {
+      "database": {
+        "name": "name"
+      }
+    };
+
+    superOM1.addMapper(userMapper, "users");
+    superOM2.addMapper(locationMapper, "locations");
+
+    it('should share mappers between implementations', function(){
+      expect(SuperOM._mappers.locations).to.exist();
+      expect(SuperOM._mappers.users).to.exist();
     });
 
   });
