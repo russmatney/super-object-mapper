@@ -6,4 +6,29 @@ describe('Super Object Mapper', function() {
   it('exists', function() {
     expect(SuperOM).to.exist();
   });
+
+  describe('maps an object to a specified map', function() {
+    var map = 'database';
+    var collection = 'users';
+    var object = {
+      name: "Mario",
+      email: "mario@toadstool.com",
+      secrets: "Sleeps with a blanky named Stewart"
+    };
+    var mappedObject = SuperOM.mapObject(map, collection, object);
+
+    it('should return a mapped object', function() {
+      expect(mappedObject).to.exist();
+    });
+
+    it('should transfer keys and values', function() {
+      expect(mappedObject.name).to.equal(object.name).and.exist();
+      expect(mappedObject.email).to.equal(object.email).and.exist();
+    });
+
+    it('should not include fields that are not in the mapper', function() {
+      expect(mappedObject.secrets).not.to.exist();
+    });
+
+  });
 });
