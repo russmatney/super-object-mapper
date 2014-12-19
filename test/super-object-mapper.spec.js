@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-
 var SuperOM = require('../');
 
 describe('Super Object Mapper', function() {
@@ -69,5 +68,17 @@ describe('Super Object Mapper', function() {
       expect(SuperOM._mappers.users).to.exist();
     });
 
+  });
+
+  describe('handles missing collections', function() {
+    var superOM = new SuperOM();
+    var object = {
+      "name": "William Franklyn Bowser"
+    };
+    var mapObjectFunc = superOM.mapObject.bind(superOM, "database", "gremlins", object);
+
+    it('should throw a missing collection error', function() {
+      expect(mapObjectFunc).to.throw(/Collection not found/);
+    });
   });
 });
