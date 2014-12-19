@@ -25,5 +25,8 @@
   "devDependencies": {
     "chai": "^1.10.0",
     "mocha": "^2.0.1"
+  },
+  "dependencies": {
+    "object-mapper": "0.0.7"
   }
 }

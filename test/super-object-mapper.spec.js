@@ -8,8 +8,19 @@ describe('Super Object Mapper', function() {
   });
 
   describe('maps an object to a specified map', function() {
-    var map = 'database';
+
+    var userMapper = {
+      "database": {
+        "name": "name",
+        "email": "email"
+      }
+    };
+
     var collection = 'users';
+
+    SuperOM.addMapper(userMapper, collection);
+
+    var map = 'database';
     var object = {
       name: "Mario",
       email: "mario@toadstool.com",
