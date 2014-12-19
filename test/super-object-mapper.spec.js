@@ -7,7 +7,7 @@ describe('Super Object Mapper', function() {
     expect(SuperOM).to.exist();
   });
 
-  describe('maps an object to a specified map', function() {
+  describe('maps a defined object to a specified map', function() {
 
     var userMapper = {
       "database": {
