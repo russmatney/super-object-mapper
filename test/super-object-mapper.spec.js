@@ -17,7 +17,7 @@ describe('Super Object Mapper', function() {
     var userMapper = {
       "database": {
         "name": "name",
-        "email": "email"
+        "email": "emailAddress"
       }
     };
 
@@ -37,9 +37,12 @@ describe('Super Object Mapper', function() {
       expect(mappedObject).to.exist();
     });
 
-    it('should transfer keys and values', function() {
+    it('should transfer values', function() {
       expect(mappedObject.name).to.equal(object.name).and.exist();
-      expect(mappedObject.email).to.equal(object.email).and.exist();
+    });
+
+    it('should change keys as specified', function() {
+      expect(mappedObject.emailAddress).to.equal(object.email).and.exist();
     });
 
     it('should not include fields that are not in the mapper', function() {
@@ -150,7 +153,6 @@ describe('Super Object Mapper', function() {
 });
 
 //TODO: handle arrays
-//TODO: unit test for changing field name
 //TODO: dive into type-setting
 //TODO: break this file into smaller pieces
 
