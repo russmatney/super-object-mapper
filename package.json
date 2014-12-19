@@ -27,6 +27,7 @@
     "mocha": "^2.0.1"
   },
   "dependencies": {
+    "lodash": "^2.4.1",
     "object-mapper": "0.0.7"
   }
 }

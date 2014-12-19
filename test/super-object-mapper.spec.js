@@ -100,11 +100,50 @@ describe('Super Object Mapper', function() {
 
   describe('handles null', function() {
     var superOM = new SuperOM();
-    it('should return null', function() {
+    it('should return null if the object is null', function() {
       superOM.addMapper({"domain":{}}, "users");
       var mappedObject = superOM.mapObject("domain", "users", null);
 
       expect(mappedObject).to.equal(null);
+    });
+
+    it('should keep null or undefined fields by default', function() {
+
+      superOM.addMapper({
+        "domain":{
+          name: 'name',
+          fieldSetToNull: 'fieldSetToNull',
+          fieldSetToUndefined: 'fieldSetToUndefined'
+        }
+      }, "users");
+      var object = {
+        name: 'Peaches',
+        fieldSetToNull: null,
+        fieldSetToUndefined: null
+      };
+      var mappedObject = superOM.mapObject("domain", "users", object);
+
+      expect(mappedObject).to.have.property('fieldSetToNull')
+      expect(mappedObject).to.have.property('fieldSetToUndefined')
+    });
+
+    it('should remove null or undefined fields if specified', function() {
+      superOM.addMapper({
+        "domain":{
+          name: 'name',
+          fieldSetToNull: 'fieldSetToNull',
+          fieldSetToUndefined: 'fieldSetToUndefined'
+        }
+      }, "users");
+      var object = {
+        name: 'Peaches',
+        fieldSetToNull: null,
+        fieldSetToUndefined: null
+      };
+      var mappedObject = superOM.mapObject("domain", "users", object, {clean: true});
+
+      expect(mappedObject).not.to.have.property('fieldSetToNull')
+      expect(mappedObject).not.to.have.property('fieldSetToUndefined')
     });
   });
 
