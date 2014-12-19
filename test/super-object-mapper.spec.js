@@ -148,3 +148,9 @@ describe('Super Object Mapper', function() {
   });
 
 });
+
+//TODO: handle arrays
+//TODO: unit test for changing field name
+//TODO: dive into type-setting
+//TODO: break this file into smaller pieces
+
