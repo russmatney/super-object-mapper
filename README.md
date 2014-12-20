@@ -73,7 +73,7 @@ var object = {
 var databaseObject = superOM.mapObject("database", "users", object);
 
 console.log(databaseObject);
-//databaseObject now == {
+//{
 //  _id: "123456abcdef654321fedcba",
 //  name: "Mario",
 //  emailAddress: "mario@toadstool.com"
@@ -86,8 +86,8 @@ If the specifed map or mapper do not exist, an error will be thrown.
 
 If the object passed is falsy, `null` will be returned.
 
-Instead of an `object`, you may hand an array of objects to the `mapObject` function.
-If you do so, the mapper will be run over every object in the array,
+Instead of an `object`, you may hand an `array` of `object`s to the `mapObject` function.
+The mapper will be run over every object in the array,
 and the fully mapped Array will be returned.
 
 ```
