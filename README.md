@@ -130,20 +130,32 @@ options = {
 }
 ```
 
-#Future
+##SuperOMType
 
-Coming soon is a set of transformers for built-in data type handling in the Mappers. Essentially:
+`super-object-mapper` provides a set of built-in datatype handlers. These types can be implemented in your mappers as follows:
 
 ```
+superOMType = require('super-object-mapper').Types;
+
 userMapper = {
   "database": {
-    "id": superOM.mongoId("_id")
+    "id": superOMType.objectId("_id")
   },
   "domain": {
-    "_id": superOM.string("id")
+    "_id": superOMType.string("id")
   }
 }
 ```
+
+These wrappers will cast your data type as the specified type, with the exception of `falsy` values, which will always be passed across the mappers as `null`.
+
+###`.string(key)`
+
+Converts any value passed to a String.
+
+###`.objectId(key)`
+
+Currently this depends on the `ObjectID` provided by `mongodb-core.BSON` (TODO: add links).
 
 #Development
 
