@@ -25,7 +25,7 @@ describe('Super Object Mapper type enforcement', function() {
         .and.exist();
     });
 
-    it('should return nothing if value is null', function() {
+    it('should set field to null if value is null', function() {
       superOM.addMapper({
         "domain": {
           "name": superOMType.string("name")
@@ -36,9 +36,7 @@ describe('Super Object Mapper type enforcement', function() {
       };
       var mappedObject = superOM.mapObject("domain", "users", object);
 
-      console.log(mappedObject);
-
-      expect(mappedObject.name).not.to.exist();
+      expect(mappedObject).to.have.property('name').and.eql(null);
     });
 
     it('should return nothing if value is not passed', function() {
@@ -50,7 +48,7 @@ describe('Super Object Mapper type enforcement', function() {
       var object = { };
       var mappedObject = superOM.mapObject("domain", "users", object);
 
-      expect(mappedObject.name).not.to.exist();
+      expect(mappedObject).not.to.have.property("name");
     });
 
     var testData = [

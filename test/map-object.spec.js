@@ -140,5 +140,3 @@ describe('Super Object Mapper .mapObject()', function() {
   });
 });
 
-//TODO: dive into type-setting
-
