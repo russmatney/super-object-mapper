@@ -111,7 +111,6 @@ describe('Super Object Mapper', function() {
     });
 
     it('should keep null or undefined fields by default', function() {
-
       superOM.addMapper({
         "domain":{
           name: 'name',
@@ -148,11 +147,92 @@ describe('Super Object Mapper', function() {
       expect(mappedObject).not.to.have.property('fieldSetToNull')
       expect(mappedObject).not.to.have.property('fieldSetToUndefined')
     });
+
+    it('(unless {clean:true}) should not set properties that are not on the original object', function() {
+      superOM.addMapper({
+        "domain": {
+          "name": "name",
+          "notOnObject": "notOnObject"
+        }
+      }, "users");
+      var object = {
+        name: 'Johnny Bravo'
+      };
+      var mappedObject = superOM.mapObject('domain', 'users', object);
+
+      expect(mappedObject).not.to.have.property('notOnObject');
+    });
+
+    it('(unless {clean:true}) should persist null for properties that are explicitly falsy on the original object', function() {
+      superOM.addMapper({
+        "domain": {
+          "name": "name",
+          "persistNull": "persistNull",
+          "persistUndefined": "persistUndefined"
+        }
+      }, "users");
+      var object = {
+        name: 'Johnny Bravo',
+        persistNull: null,
+        persistUndefined: undefined
+      };
+      var mappedObject = superOM.mapObject('domain', 'users', object);
+
+      expect(mappedObject).to.have.property('persistNull').and.eql(null);
+      expect(mappedObject).to.have.property('persistUndefined').and.eql(null);
+    });
+
+  });
+
+  describe('handles arrays of objects', function () {
+    var superOM = new SuperOM();
+
+    it('should return an empty array if one is passed', function() {
+      superOM.addMapper({
+        "domain":{
+          name: 'name'
+        }
+      }, "users");
+      var array = [];
+      var mappedArray = superOM.mapObject("domain", "users", array);
+
+      expect(mappedArray).to.eql([]);
+    });
+
+    it('should return an array of mapped objects in order', function() {
+      superOM.addMapper({
+        "domain":{
+          name: 'name',
+          lastEggLaid: 'last_egg_laid',
+          "email": "email"
+        }
+      }, "users");
+      var array = [
+        {
+          name: "Luigi",
+          color: "green. no, purple"
+        }, {
+          name: "Peach",
+          mustache: true
+        }, {
+          name: "Yoshi",
+          lastEggLaid: "June, 1986"
+        }
+      ];
+      var mappedArray = superOM.mapObject("domain", "users", array);
+
+      expect(mappedArray[0].name).to.eql("Luigi");
+      expect(mappedArray[1].name).to.eql("Peach");
+      expect(mappedArray[1]).not.to.have.property('mustache');
+      expect(mappedArray[1]).not.to.have.property('last_egg_laid');
+      expect(mappedArray[2].name).to.eql('Yoshi');
+      expect(mappedArray[2].last_egg_laid).to.exist();
+    });
+
   });
 
 });
 
-//TODO: handle arrays
 //TODO: dive into type-setting
 //TODO: break this file into smaller pieces
 
