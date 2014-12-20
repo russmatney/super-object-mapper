@@ -47,12 +47,12 @@ userMapper = {
   "database": {
     "id": "_id",
     "name": "name",
-    "email": "email"
+    "email": "emailAddress"
   },
   "domain": {
     "_id": "id",
     "name": "name",
-    "email": "email"
+    "emailAddress": "email"
   }
 }
 
@@ -70,17 +70,57 @@ var object = {
   email: "mario@toadstool.com",
   extraneousProperty: "whatever data"
 }
-var databaseObject = superOM.mapObject("domain", "users", object);
+var databaseObject = superOM.mapObject("database", "users", object);
 
 console.log(databaseObject);
 //databaseObject now == {
 //  _id: "123456abcdef654321fedcba",
 //  name: "Mario",
-//  email: "mario@toadstool.com"
+//  emailAddress: "mario@toadstool.com"
 //}
 ```
 
-Only the fields specified by the mapper will survive the mapping.
+Only the fields specified by the mapper will survive the mapping. Fields excplicity set to falsy falues will be carried through the mappers as null.
+
+If the specifed map or mapper do not exist, an error will be thrown.
+
+If the object passed is falsy, `null` will be returned.
+
+Instead of an `object`, you may hand an array of objects to the `mapObject` function.
+If you do so, the mapper will be run over every object in the array,
+and the fully mapped Array will be returned.
+
+```
+var array = [
+  {
+    id: "123456abcdef654321fedcba",
+    name: "Mario",
+    email: "mario@toadstool.com",
+    extraneousProperty: "whatever data"
+  }, {
+    id: "123456abcdef654321fedcba",
+    name: "Luigi",
+    email: "luigi@toadstool.com",
+    extraneousProperty: "whatever data"
+  }
+]
+var databaseArray = superOM.mapObject("database", "users", array);
+
+console.log(databaseArray);
+//[
+//  {
+//    _id: "123456abcdef654321fedcba",
+//    name: "Mario",
+//    emailAddress: "mario@toadstool.com"
+//  },{
+//    _id: "123456abcdef654321fedcba",
+//    name: "Luigi",
+//    emailAddress: "luigi@toadstool.com"
+//  }
+//]
+```
+
+###options
 
 You can optionally pass a 4th `options` parameter, which defaults as follows:
 
@@ -89,10 +129,6 @@ options: {
   clean: false // if `true`, `.mapObject` will remove falsy values from the mapped object
 }
 ```
-
-If the specifed map or mapper do not exist, an error will be thrown.
-
-If the object passed is falsy, `null` will be returned.
 
 #Future
 
@@ -112,3 +148,5 @@ userMapper = {
 #Development
 
 Feel free to contribute! Open to any PRs.
+
+Run tests with `npm test`.
