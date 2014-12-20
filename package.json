@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "lodash": "^2.4.1",
-    "object-mapper": "0.0.7"
+    "object-mapper": "0.0.7",
+    "mongodb-core": "^1.1.7"
   }
 }

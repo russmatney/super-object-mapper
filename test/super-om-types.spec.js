@@ -1,6 +1,8 @@
 var expect = require('chai').expect;
 var SuperOM = require('../');
 
+var ObjectID = require('mongodb-core').BSON.ObjectID;
+
 describe('Super Object Mapper type enforcement', function() {
   var superOMType = SuperOM.Types;
   it('should expose a Type object', function() {
@@ -54,8 +56,8 @@ describe('Super Object Mapper type enforcement', function() {
     var testData = [
       {type: "string", value: "Johnny", expected: "Johnny"},
       {type: "number", value: 8, expected: '8'},
-      {type: "float", value: 8.1234, expected: '8.1234'}
-      //TODO: test for MongoIds
+      {type: "float", value: 8.1234, expected: '8.1234'},
+      {type: "ObjectID", value: ObjectID("123456abcdef654321fedcba"), expected: "123456abcdef654321fedcba"}
     ];
 
     testData.forEach(function(tData) {
@@ -76,4 +78,74 @@ describe('Super Object Mapper type enforcement', function() {
     });
 
   });
+
+
+  describe('.objectId()', function(){
+    var superOM = new SuperOM();
+
+    it('should convert keys properly', function() {
+      superOM.addMapper({
+        "domain": {
+          "name": superOMType.objectId("doodle")
+        }
+      }, "users");
+      var object = {
+        name: ObjectID("123456abcdef654321fedcba")
+      };
+      var mappedObject = superOM.mapObject("domain", "users", object);
+
+      expect(mappedObject.doodle).to.be.an.instanceof(ObjectID).and.eql(object.name)
+        .and.exist();
+    });
+
+    it('should set field to null if value is null', function() {
+      superOM.addMapper({
+        "domain": {
+          "name": superOMType.objectId("name")
+        }
+      }, "users");
+      var object = {
+        name: null
+      };
+      var mappedObject = superOM.mapObject("domain", "users", object);
+
+      expect(mappedObject).to.have.property('name').and.eql(null);
+    });
+
+    it('should return nothing if value is not passed', function() {
+      superOM.addMapper({
+        "domain": {
+          "name": superOMType.objectId("name")
+        }
+      }, "users");
+      var object = { };
+      var mappedObject = superOM.mapObject("domain", "users", object);
+
+      expect(mappedObject).not.to.have.property("name");
+    });
+
+    var testData = [
+      {type: "string", value: "123456abcdef654321fedcba", expected: ObjectID("123456abcdef654321fedcba")},
+      {type: "ObjectID", value: ObjectID("123456abcdef654321fedcba"), expected: ObjectID("123456abcdef654321fedcba")}
+    ];
+
+    testData.forEach(function(tData) {
+      it('should convert ' + tData.type + 's to objectIds', function() {
+        superOM.addMapper({
+          "domain": {
+            "attr": superOMType.objectId("attr")
+          }
+        }, "users");
+        var object = {
+          attr: tData.value
+        };
+        var mappedObject = superOM.mapObject("domain", "users", object);
+
+        expect(mappedObject.attr).to.be.an.instanceof(ObjectID).and.eql(tData.expected)
+          .and.exist();
+      });
+    });
+
+  });
+
 });
