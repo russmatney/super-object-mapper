@@ -53,36 +53,28 @@ describe('Super Object Mapper type enforcement', function() {
       expect(mappedObject.name).not.to.exist();
     });
 
+    var testData = [
+      {type: "string", value: "Johnny", expected: "Johnny"},
+      {type: "number", value: 8, expected: '8'},
+      {type: "float", value: 8.1234, expected: '8.1234'}
+      //TODO: test for MongoIds
+    ];
 
-    it('should convert strings to strings', function() {
-      superOM.addMapper({
-        "domain": {
-          "name": superOMType.string("name")
-        }
-      }, "users");
-      var object = {
-        name: "Johnny"
-      };
-      var mappedObject = superOM.mapObject("domain", "users", object);
+    testData.forEach(function(tData) {
+      it('should convert ' + tData.type + 's to strings', function() {
+        superOM.addMapper({
+          "domain": {
+            "attr": superOMType.string("attr")
+          }
+        }, "users");
+        var object = {
+          attr: tData.value
+        };
+        var mappedObject = superOM.mapObject("domain", "users", object);
 
-      expect(mappedObject.name).to.be.a("string").and.equal(object.name)
-        .and.exist();
-    });
-
-    it('should convert numbers to strings', function() {
-      superOM.addMapper({
-        "domain": {
-          "count": superOMType.string("count")
-        }
-      }, "users");
-      var object = {
-        count: 8
-      };
-      var mappedObject = superOM.mapObject("domain", "users", object);
-
-      expect(mappedObject.count).to.be.a("string").and.equal('8')
-        .and.exist();
-
+        expect(mappedObject.attr).to.be.a("string").and.equal(tData.expected)
+          .and.exist();
+      });
     });
 
   });
