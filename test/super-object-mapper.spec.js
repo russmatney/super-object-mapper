@@ -101,7 +101,7 @@ describe('Super Object Mapper', function() {
     });
   });
 
-  describe.only('handles null', function() {
+  describe('handles null', function() {
     var superOM = new SuperOM();
     it('should return null if the object is null', function() {
       superOM.addMapper({"domain":{}}, "users");
@@ -159,26 +159,27 @@ describe('Super Object Mapper', function() {
         name: 'Johnny Bravo'
       };
       var mappedObject = superOM.mapObject('domain', 'users', object);
-      console.log(mappedObject);
 
       expect(mappedObject).not.to.have.property('notOnObject');
     });
 
-    it('(unless {clean:true}) should retain properties that are set to null on the original object', function() {
+    it('(unless {clean:true}) should persist null for properties that are explicitly falsy on the original object', function() {
       superOM.addMapper({
         "domain": {
           "name": "name",
-          "setToNull": "setToNull"
+          "persistNull": "persistNull",
+          "persistUndefined": "persistUndefined"
         }
       }, "users");
       var object = {
         name: 'Johnny Bravo',
-        setToNull: null
+        persistNull: null,
+        persistUndefined: undefined
       };
       var mappedObject = superOM.mapObject('domain', 'users', object);
-      console.log(mappedObject);
 
-      expect(mappedObject).to.have.property('setToNull').and.eql(null);
+      expect(mappedObject).to.have.property('persistNull').and.eql(null);
+      expect(mappedObject).to.have.property('persistUndefined').and.eql(null);
     });
 
   });
@@ -219,7 +220,6 @@ describe('Super Object Mapper', function() {
         }
       ];
       var mappedArray = superOM.mapObject("domain", "users", array);
-      console.log(mappedArray);
 
       expect(mappedArray[0].name).to.eql("Luigi");
       expect(mappedArray[1].name).to.eql("Peach");
