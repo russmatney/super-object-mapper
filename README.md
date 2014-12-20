@@ -125,7 +125,7 @@ console.log(databaseArray);
 You can optionally pass a 4th `options` parameter, which defaults as follows:
 
 ```
-options: {
+options = {
   clean: false // if `true`, `.mapObject` will remove falsy values from the mapped object
 }
 ```
