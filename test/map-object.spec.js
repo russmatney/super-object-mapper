@@ -81,26 +81,29 @@ describe('Super Object Mapper .mapObject()', function() {
       expect(mappedObject).to.equal(null);
     });
 
-    it('should keep null or undefined fields by default', function() {
+    it('should persist explicit null or undefined fields by default', function() {
       superOM.addMapper({
         "domain":{
           name: 'name',
           fieldSetToNull: 'fieldSetToNull',
-          fieldSetToUndefined: 'fieldSetToUndefined'
+          fieldSetToUndefined: 'fieldSetToUndefined',
+          nullField: 'nullFieldChangedName'
         }
       }, "users");
       var object = {
         name: 'Peaches',
         fieldSetToNull: null,
-        fieldSetToUndefined: null
+        fieldSetToUndefined: null,
+        nullField: null
       };
       var mappedObject = superOM.mapObject("domain", "users", object);
 
-      expect(mappedObject).to.have.property('fieldSetToNull')
-      expect(mappedObject).to.have.property('fieldSetToUndefined')
+      expect(mappedObject).to.have.property('fieldSetToNull').and.eql(null);
+      expect(mappedObject).to.have.property('fieldSetToUndefined').and.eql(null);
+      expect(mappedObject).to.have.property('nullFieldChangedName').and.eql(null);
     });
 
-    it('should remove null or undefined fields if specified', function() {
+    it('should remove null or undefined fields if {clean: true} passed as an option', function() {
       superOM.addMapper({
         "domain":{
           name: 'name',
@@ -132,25 +135,6 @@ describe('Super Object Mapper .mapObject()', function() {
       var mappedObject = superOM.mapObject('domain', 'users', object);
 
       expect(mappedObject).not.to.have.property('notOnObject');
-    });
-
-    it('(unless {clean:true}) should persist null for properties that are explicitly falsy on the original object', function() {
-      superOM.addMapper({
-        "domain": {
-          "name": "name",
-          "persistNull": "persistNull",
-          "persistUndefined": "persistUndefined"
-        }
-      }, "users");
-      var object = {
-        name: 'Johnny Bravo',
-        persistNull: null,
-        persistUndefined: undefined
-      };
-      var mappedObject = superOM.mapObject('domain', 'users', object);
-
-      expect(mappedObject).to.have.property('persistNull').and.eql(null);
-      expect(mappedObject).to.have.property('persistUndefined').and.eql(null);
     });
 
   });
