@@ -1,6 +1,6 @@
 #super-object-mapper
 
-Sup-ed up object-level schema control - whitelist fields and convert between types and keys.
+Flexibly enforce any schema, anytime. SuperOM is sup-ed up schema control over any object - whitelist fields and convert between types and keys at your leisure.
 
 Many thanks and credit are due to [wankdanker's node-object-mapper](https://github.com/wankdanker/node-object-mapper).
 This module is essentially an API and Type-enforcement layer on top of it,
