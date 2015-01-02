@@ -1,5 +1,7 @@
 #super-object-mapper
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/russmatney/super-object-mapper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Flexibly enforce any schema, anytime. SuperOM is sup-ed up schema control over any object - whitelist fields and convert between types and keys at your leisure.
 
 Many thanks and credit are due to [wankdanker's node-object-mapper](https://github.com/wankdanker/node-object-mapper).
