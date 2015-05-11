@@ -29,7 +29,7 @@ An object mapper can deal with issues where your app's consumers:
 
 Notably, the above use-cases can all be accomplished with [wankdanker's node-object-mapper](https://github.com/wankdanker/node-object-mapper).
 After building a handful of apps with this module,
-a few patterns popped up - Super Object Mapper intends to present those patterns with a tighter API.
+a few patterns popped up - Super Object Mapper intends to present those patterns with a simple API.
 
 #Usage
 
@@ -40,9 +40,9 @@ var SuperOM = require('super-object-mapper');
 var superOM = new SuperOM();
 ```
 
-##`superOM.addMapper(mapper, mapperName)`
+###`superOM.addMapper(mapper, mapperName)`
 
-Define and add mapper to any instance of `superOM` like so:
+Define and add a mapper to any instance of `superOM` like so:
 
 ```
 userMapper = {
@@ -61,7 +61,7 @@ userMapper = {
 superOM.addMapper(userMapper, "users");
 ```
 
-##`superOM.mapObject(mapName, mapperName, object[, options])`
+###`superOM.mapObject(mapName, mapperName, object[, options])`
 
 You can then run any object across the mapper and map of your choosing.
 
