@@ -21,7 +21,7 @@ describe('Super Object Mapper type enforcement', function() {
       var object = {
         name: "Johnny"
       };
-      var mappedObject = superOM.mapObject("domain", "users", object);
+      var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
       expect(mappedObject.doodle).to.be.a("string").and.equal(object.name)
         .and.exist();
@@ -36,7 +36,7 @@ describe('Super Object Mapper type enforcement', function() {
       var object = {
         name: null
       };
-      var mappedObject = superOM.mapObject("domain", "users", object);
+      var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
       expect(mappedObject).to.have.property('name').and.eql(null);
     });
@@ -48,7 +48,7 @@ describe('Super Object Mapper type enforcement', function() {
         }
       }, "users");
       var object = { };
-      var mappedObject = superOM.mapObject("domain", "users", object);
+      var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
       expect(mappedObject).not.to.have.property("name");
     });
@@ -70,7 +70,7 @@ describe('Super Object Mapper type enforcement', function() {
         var object = {
           attr: tData.value
         };
-        var mappedObject = superOM.mapObject("domain", "users", object);
+        var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
         expect(mappedObject.attr).to.be.a("string").and.equal(tData.expected)
           .and.exist();
@@ -92,7 +92,7 @@ describe('Super Object Mapper type enforcement', function() {
       var object = {
         name: ObjectID("123456abcdef654321fedcba")
       };
-      var mappedObject = superOM.mapObject("domain", "users", object);
+      var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
       expect(mappedObject.doodle).to.be.an.instanceof(ObjectID).and.eql(object.name)
         .and.exist();
@@ -107,7 +107,7 @@ describe('Super Object Mapper type enforcement', function() {
       var object = {
         name: null
       };
-      var mappedObject = superOM.mapObject("domain", "users", object);
+      var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
       expect(mappedObject).to.have.property('name').and.eql(null);
     });
@@ -119,7 +119,7 @@ describe('Super Object Mapper type enforcement', function() {
         }
       }, "users");
       var object = { };
-      var mappedObject = superOM.mapObject("domain", "users", object);
+      var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
       expect(mappedObject).not.to.have.property("name");
     });
@@ -139,7 +139,7 @@ describe('Super Object Mapper type enforcement', function() {
         var object = {
           attr: tData.value
         };
-        var mappedObject = superOM.mapObject("domain", "users", object);
+        var mappedObject = superOM.mapObject(object, {map: "domain", mapper: "users"});
 
         expect(mappedObject.attr).to.be.an.instanceof(ObjectID).and.eql(tData.expected)
           .and.exist();

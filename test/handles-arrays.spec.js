@@ -11,19 +11,19 @@ describe('Super Object Mapper handles arrays', function() {
 
   it('should return an empty array if one is passed', function() {
     superOM.addMapper({
-      "domain":{
+      "domain": {
         name: 'name'
       }
     }, "users");
     var array = [];
-    var mappedArray = superOM.mapObject("domain", "users", array);
+    var mappedArray = superOM.mapObject(array, {map: "domain", mapper: "users"});
 
     expect(mappedArray).to.eql([]);
   });
 
   it('should return an array of mapped objects in order', function() {
     superOM.addMapper({
-      "domain":{
+      "domain": {
         name: 'name',
         lastEggLaid: 'last_egg_laid',
         "email": "email"
@@ -41,7 +41,7 @@ describe('Super Object Mapper handles arrays', function() {
         lastEggLaid: "June, 1986"
       }
     ];
-    var mappedArray = superOM.mapObject("domain", "users", array);
+    var mappedArray = superOM.mapObject(array, {map: "domain", mapper: "users"});
 
     expect(mappedArray[0].name).to.eql("Luigi");
     expect(mappedArray[1].name).to.eql("Peach");
