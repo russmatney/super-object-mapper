@@ -61,7 +61,7 @@ userMapper = {
 superOM.addMapper(userMapper, "users");
 ```
 
-###`superOM.mapObject(mapName, mapperName, object[, options])`
+###`superOM.mapObject(object, options)`
 
 You can then run any object across the mapper and map of your choosing.
 
@@ -72,7 +72,7 @@ var object = {
   email: "mario@toadstool.com",
   extraneousProperty: "whatever data"
 }
-var databaseObject = superOM.mapObject("database", "users", object);
+var databaseObject = superOM.mapObject(object, {mapper: "users", map: "database"});
 
 console.log(databaseObject);
 //{
@@ -106,7 +106,7 @@ var array = [
     extraneousProperty: "whatever data"
   }
 ]
-var databaseArray = superOM.mapObject("database", "users", array);
+var databaseArray = superOM.mapObject(array, {mapper: "users", map: "database"});
 
 console.log(databaseArray);
 //[
@@ -124,12 +124,11 @@ console.log(databaseArray);
 
 ###options
 
-You can optionally pass a 4th `options` parameter, which defaults as follows:
+You can specify `clean` on the options object to remove falsey values from the
+mapped object.
 
 ```
-options = {
-  clean: false // if `true`, `.mapObject` will remove falsy values from the mapped object
-}
+var mappedObject = superOM.mapObject(object, {mapper: "users", map: "database", clean: true});
 ```
 
 ##SuperOMType
