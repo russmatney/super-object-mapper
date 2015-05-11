@@ -1,6 +1,6 @@
 {
   "name": "super-object-mapper",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Sup-ed up object-level schema control - whitelist fields and convert between types and keys.",
   "main": "index.js",
   "scripts": {
