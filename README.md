@@ -82,7 +82,7 @@ console.log(databaseObject);
 //}
 ```
 
-Only the fields specified by the mapper will survive the mapping. Fields excplicity set to falsy falues will be carried through the mappers as null.
+Only the fields specified by the mapper will survive the mapping. Fields explicity set to falsy values will be carried through the mappers as null.
 
 If the specifed map or mapper do not exist, an error will be thrown.
 
