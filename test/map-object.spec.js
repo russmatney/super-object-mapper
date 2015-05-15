@@ -8,41 +8,161 @@ describe('Super Object Mapper .mapObject()', function() {
   });
 
   describe('maps a defined object to a specified map', function() {
-    var superOM = new SuperOM();
 
-    var userMapper = {
-      "database": {
-        "name": "name",
-        "email": "emailAddress"
-      }
-    };
+    describe('hardcoded mapper name', function() {
+      var superOM = new SuperOM();
 
-    var mapper = 'users';
+      var userMapper = {
+        "database": {
+          "name": "name",
+          "email": "emailAddress"
+        }
+      };
 
-    superOM.addMapper(userMapper, mapper);
+      var mapper = 'users';
 
-    var map = 'database';
-    var object = {
-      name: "Mario",
-      email: "mario@toadstool.com",
-      secrets: "Sleeps with a blanky named Stewart"
-    };
-    var mappedObject = superOM.mapObject(object, {mapper: mapper, map: map});
+      superOM.addMapper(userMapper, mapper);
 
-    it('should return a mapped object', function() {
-      expect(mappedObject).to.exist();
+      var map = 'database';
+      var object = {
+        name: "Mario",
+        email: "mario@toadstool.com",
+        secrets: "Sleeps with a blanky named Stewart"
+      };
+      var mappedObject = superOM.mapObject(object, {mapper: mapper, map: map});
+
+      it('should return a mapped object', function() {
+        expect(mappedObject).to.exist();
+      });
+
+      it('should transfer values', function() {
+        expect(mappedObject.name).to.equal(object.name).and.exist();
+      });
+
+      it('should change keys as specified', function() {
+        expect(mappedObject.emailAddress).to.equal(object.email).and.exist();
+      });
+
+      it('should not include fields that are not in the mapper', function() {
+        expect(mappedObject.secrets).not.to.exist();
+      });
     });
 
-    it('should transfer values', function() {
-      expect(mappedObject.name).to.equal(object.name).and.exist();
+    describe('mapper name as closure', function() {
+      var superOM = new SuperOM();
+
+      var userMapper = {
+        "userToDatabase": {
+          "name": "name",
+          "email": "emailAddress"
+        }
+      };
+      var adminMapper = {
+        "userToDatabase": {
+          "name": "name",
+          "email": "emailAddress",
+          "admin": "admin"
+        }
+      };
+      superOM.addMapper(userMapper, "user");
+      superOM.addMapper(adminMapper, "admin");
+
+      var userSession = { };
+      var adminSession = { admin: true };
+      var adminCheck = function(user) {
+        return function() {
+          return user.admin ? 'admin' : 'user';
+        };
+      };
+
+      var map = 'userToDatabase';
+      var object = {
+        name: "Mario",
+        email: "mario@toadstool.com",
+        secrets: "Sleeps with a blanky named Stewart",
+        admin: true
+      };
+      var userMappedObject = superOM.mapObject(object, {mapper: adminCheck(userSession), map: map});
+      var adminMappedObject = superOM.mapObject(object, {mapper: adminCheck(adminSession), map: map});
+
+      it('should return a mapped object', function() {
+        expect(userMappedObject).to.exist();
+        expect(adminMappedObject).to.exist();
+      });
+
+      it('should transfer values', function() {
+        expect(userMappedObject.name).to.equal(object.name).and.exist();
+        expect(adminMappedObject.name).to.equal(object.name).and.exist();
+      });
+
+      it('should change keys as specified', function() {
+        expect(userMappedObject.emailAddress).to.equal(object.email).and.exist();
+        expect(adminMappedObject.emailAddress).to.equal(object.email).and.exist();
+      });
+
+      it('should not include fields that are not in the mapper', function() {
+        expect(userMappedObject.secrets).not.to.exist();
+        expect(adminMappedObject.secrets).not.to.exist();
+      });
+
+      it('should select the proper mapper based on user', function() {
+        expect(userMappedObject.admin).not.to.exist();
+        expect(adminMappedObject.admin).to.equal(true);
+      });
     });
 
-    it('should change keys as specified', function() {
-      expect(mappedObject.emailAddress).to.equal(object.email).and.exist();
-    });
+    describe('mapper name as closure unique over an array', function() {
+      var superOM = new SuperOM();
 
-    it('should not include fields that are not in the mapper', function() {
-      expect(mappedObject.secrets).not.to.exist();
+      var userMapper = {
+        "userToDatabase": {
+          "name": "name",
+          "email": "emailAddress"
+        }
+      };
+      var ownerMapper = {
+        "userToDatabase": {
+          "name": "name",
+          "email": "emailAddress",
+          "secrets": "secrets"
+        }
+      };
+      superOM.addMapper(userMapper, "user");
+      superOM.addMapper(ownerMapper, "owner");
+
+      var userSession = { name: "Johnny" };
+      var ownerSession = { name: "Trump" };
+      var ownerCheck = function(user) {
+        return function(obj) {
+          return obj.name == user.name ? 'owner' : 'user';
+        };
+      };
+
+      var map = 'userToDatabase';
+      var objects = [{
+        name: "Trump",
+        email: "mario@toadstool.com",
+        secrets: "Sleeps with a blanky named Stewart"
+      }, {
+        name: "Bill",
+        email: "mario@toadstool.com",
+        secrets: "Doesn't know his horse from his happiness"
+      }];
+      var userMappedObjects = superOM.mapObject(objects, {mapper: ownerCheck(userSession), map: map});
+      var ownerMappedObjects = superOM.mapObject(objects, {mapper: ownerCheck(ownerSession), map: map});
+
+      it('should return mapped objects', function() {
+        expect(userMappedObjects).to.exist();
+        expect(ownerMappedObjects).to.exist();
+      });
+
+      it('should not include fields that are not in the mapper', function() {
+        expect(userMappedObjects[0].secrets).not.to.exist();
+        expect(userMappedObjects[1].secrets).not.to.exist();
+        expect(ownerMappedObjects[0].secrets).to.exist().and.equal(objects[0].secrets);
+        expect(ownerMappedObjects[1].secrets).not.to.exist();
+      });
+
     });
   });
 
