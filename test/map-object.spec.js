@@ -57,7 +57,6 @@ describe('Super Object Mapper .mapObject()', function() {
           "email": "emailAddress"
         }
       };
-
       var adminMapper = {
         "userToDatabase": {
           "name": "name",
@@ -65,27 +64,16 @@ describe('Super Object Mapper .mapObject()', function() {
           "admin": "admin"
         }
       };
-
-      var userSession = {
-      };
-      var adminSession = {
-        admin: true
-      };
-      function isAdmin(user) {
-        return user.admin ? true : false;
-      }
-      var adminCheck = function(user) {
-        return function() {
-          if (isAdmin(user)) {
-            return 'admin';
-          } else {
-            return 'user';
-          }
-        };
-      };
-
       superOM.addMapper(userMapper, "user");
       superOM.addMapper(adminMapper, "admin");
+
+      var userSession = { };
+      var adminSession = { admin: true };
+      var adminCheck = function(user) {
+        return function() {
+          return user.admin ? 'admin' : 'user';
+        };
+      };
 
       var map = 'userToDatabase';
       var object = {
@@ -121,6 +109,60 @@ describe('Super Object Mapper .mapObject()', function() {
         expect(userMappedObject.admin).not.to.exist();
         expect(adminMappedObject.admin).to.equal(true);
       });
+    });
+
+    describe('mapper name as closure unique over an array', function() {
+      var superOM = new SuperOM();
+
+      var userMapper = {
+        "userToDatabase": {
+          "name": "name",
+          "email": "emailAddress"
+        }
+      };
+      var ownerMapper = {
+        "userToDatabase": {
+          "name": "name",
+          "email": "emailAddress",
+          "secrets": "secrets"
+        }
+      };
+      superOM.addMapper(userMapper, "user");
+      superOM.addMapper(ownerMapper, "owner");
+
+      var userSession = { name: "Johnny" };
+      var ownerSession = { name: "Trump" };
+      var ownerCheck = function(user) {
+        return function(obj) {
+          return obj.name == user.name ? 'owner' : 'user';
+        };
+      };
+
+      var map = 'userToDatabase';
+      var objects = [{
+        name: "Trump",
+        email: "mario@toadstool.com",
+        secrets: "Sleeps with a blanky named Stewart"
+      }, {
+        name: "Bill",
+        email: "mario@toadstool.com",
+        secrets: "Doesn't know his horse from his happiness"
+      }];
+      var userMappedObjects = superOM.mapObject(objects, {mapper: ownerCheck(userSession), map: map});
+      var ownerMappedObjects = superOM.mapObject(objects, {mapper: ownerCheck(ownerSession), map: map});
+
+      it('should return mapped objects', function() {
+        expect(userMappedObjects).to.exist();
+        expect(ownerMappedObjects).to.exist();
+      });
+
+      it('should not include fields that are not in the mapper', function() {
+        expect(userMappedObjects[0].secrets).not.to.exist();
+        expect(userMappedObjects[1].secrets).not.to.exist();
+        expect(ownerMappedObjects[0].secrets).to.exist().and.equal(objects[0].secrets);
+        expect(ownerMappedObjects[1].secrets).not.to.exist();
+      });
+
     });
   });
 
